@@ -87,7 +87,6 @@ def process_wav_file(model, wav_file_path, output_text_path):
         p9 = tf.nn.sigmoid(logits)[0, top_logits_classes[8]].numpy()
         p10 = tf.nn.sigmoid(logits)[0, top_logits_classes[9]].numpy()
 
-
         save_probabilities = [float(p1), float(p2), float(p3), float(p4), float(p5), float(p6), float(p7),float(p8),float(p9),float(p10)]
 
         class_names = [name.decode('utf-8') for name in byte_class_names[top_logits_classes]]
