@@ -1,6 +1,6 @@
-# Detecting Humpback Whale Song
+# Detecting Whale Song
 
-Applying the NOAA/Google Humpback Whale Song Detector on Pacific Ocean Sound data.
+Applying the Google/kaggle multispecies Whale Detector on Pacific Ocean Sound data.
 
 References:
 
@@ -24,6 +24,34 @@ In subsequent sessions, just run `source venv/bin/activate`
 to activate the python environment.
 
 ## Want to use this on your machine?
+
+Running Google Multispecies-whale kaggle model on PAM Archive data
+
+
+Log into gizo as duane    ssh gizo.shore.mbari.org 
+Go into working directory    bash    cd google-multispecies-whale-detection 
+   source venv/bin/activate 
+   export TFHUB_CACHE_DIR="./local/"
+
+5) If need to generate resampled 24kHz files from PAM archive, run          new_resample_sox.sh
+
+These will go to  /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/ 
+6) If need to generate 5 sec chunk files from the resampled 24kHz files, run      
+      pip install soundfile
+      python3 chunk_resampled.py
+
+This program runs over one directory. Needs a script to loop over all the directories. Directory name is an argument to the program.
+
+7) If new environment, 
+        pip install tensorflow tensorflow_hub
+
+
+
+
+8) run the model over the resampled 5 sec chunks
+
+python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/ --output_dir ./results --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"
+
 
 Default settings and examples below are mainly in terms of our own setup on
 a particular machine ("gizo"), where `/mnt/PAM_Analysis/` is a base directory

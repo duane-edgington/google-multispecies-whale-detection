@@ -12,5 +12,5 @@ months=$*
 
 for m in $months; do
    echo "Running ./resample_sox.sh $year $m"
-   ./resample_sox.sh $year $m
+   ./new_resample_sox.sh $year $m
 done
