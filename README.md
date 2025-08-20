@@ -4,11 +4,12 @@ Applying the Google/kaggle multispecies Whale Detector on Pacific Ocean Sound da
 
 References:
 
-- <https://tfhub.dev/google/humpback_whale/1>
-- <https://doi.org/10.1109/OCEANS.2016.7761363>
+- <https://www.kaggle.com/models/google/multispecies-whale>
+- <https://www.frontiersin.org/journals/marine-science/articles/10.3389/fmars.2024.1394695/full>
 
 Some notebooks where code developed here has been used:
 
+- <https://colab.research.google.com/drive/1vA-wVOc9bHrNlZ7Wj0mauwyqlmV5ZkuA>
 - <https://colab.research.google.com/drive/13HinPes8vi39yjb7nD3ZULpB3eXZFxvc>
 - <https://colab.research.google.com/drive/11gxYzDKPgyqncu1ooiTrH-iWtemkFIJJ>
 
