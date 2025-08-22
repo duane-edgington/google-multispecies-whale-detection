@@ -30,17 +30,17 @@ printf "Starting resample_sox.sh: %04d-%02d days: %s\n" "${year}" "${month}" "${
 # convert to 16 bit depth high (required by the google model)
 # highpass 10Hz (to remove dc offset)
 # vol 3 (to adjust volume 3x, making the signal correct in Volts)
-# fade logarithmic 0.5 sec fade in, 600 sec hold (i.e. full duration of 10 minutes), 0.5 sec fade out
+# fade logarithmic 0.1 sec fade in, 600 sec hold (i.e. full duration of 10 minutes), 0.1 sec fade out
 
 for day in ${days}; do
   prefix=$(printf "%s/MARS_%04d%02d%02d" "${in_dir}" "${year}" "${month}" "${day}")
-  for infile in "${prefix}"_06*.wav; do
-  #for infile in "${prefix}"_*.wav; do
+  #for infile in "${prefix}"_06*.wav; do
+  for infile in "${prefix}"_*.wav; do
     basename=$(basename "${infile}" .wav)
     outfile="${out_dir}/${basename}_resampled_24kHz.wav"
     echo "infile = ${infile}"
     echo "outfile = ${outfile}"
-    sox "${infile}" -b 16 "${outfile}" rate -v 24000 highpass 10 fade 0.5 600 0.5 vol 3 &
+    sox "${infile}" -b 16 "${outfile}" rate -v 24000 highpass 10 fade 0.1 600 0.1 vol 3 &
   done
 
 done

@@ -6,18 +6,19 @@ import tensorflow_hub as hub
 import numpy as np
 from pathlib import Path
 import sys
+import json
 
 import time
 from datetime import timedelta
 
-def process_wav_file(model, wav_file_path, output_text_path):
+def process_wav_file(model, wav_file_path, output_json_path):
     """
     Process a single WAV file using the loaded TensorFlow model
     
     Args:
         model: Loaded TensorFlow model
         wav_file_path: Path to the input WAV file
-        output_text_path: Path where the output text file should be saved
+        output_text_path: Path where the output json file should be saved
     """
     try:
         # Your existing TensorFlow procedure here
@@ -30,11 +31,8 @@ def process_wav_file(model, wav_file_path, output_text_path):
         # 4. Save results to output_text_path
         
         print(f"Processing: {wav_file_path}")
-        print(f"Output will be saved to: {output_text_path}")
-        
-        # Placeholder for your actual processing code
-        # result = your_tensorflow_procedure(wav_file_path, output_text_path)
-        
+        print(f"Output will be saved to: {output_json_path}")
+         
         waveform, sample_rate = tf.audio.decode_wav(tf.io.read_file(wav_file_path),desired_channels=1,desired_samples=-1)
         # tf.audio.decode_wav decodes a 16bit PCM WAV file to a float tensor
         # The -32768 to 32767 signed 16-bit values will be scaled to -1.0 to 1.0 in float.
@@ -91,10 +89,27 @@ def process_wav_file(model, wav_file_path, output_text_path):
 
         class_names = [name.decode('utf-8') for name in byte_class_names[top_logits_classes]]
  
+        # Create data structure for JSON output
+        output_data = {
+            "filenames": [wav_file_path],
+            "scores": save_probabilities,
+            "class_names": class_names
+        }
+
+        # Write to JSON file
+        with open(output_json_path, 'w') as f:
+            json.dump(output_data, f, indent=4)
+
+        print(f"Results saved to JSON file: {output_json_path}")
+        print(f"Top 10 classes: {class_names}, sigmoid probabilities: {save_probabilities}\n")  
+
+        '''
+        #original code to output as text file
         with open(output_text_path, 'w') as f:
     
             f.write(f'{wav_file_path}, {class_names},"{save_probabilities}\n')
             print(f"Top 10 classes: {class_names}, sigmoid probabilities: {save_probabilities}\n")
+        '''
 
         return True
         
@@ -132,7 +147,7 @@ def process_directory(model, input_dir, output_base_dir):
         # Create output filename that encodes the directory name
         base_name = os.path.basename(wav_file)
         name_without_ext = os.path.splitext(base_name)[0]
-        output_filename = f"{dir_name}_{name_without_ext}_output.txt"
+        output_filename = f"{dir_name}_{name_without_ext}_output.json"
         output_path = os.path.join(output_dir, output_filename)
         
         # Process the WAV file
@@ -200,7 +215,7 @@ def main():
     parser.add_argument('--input_dir', required=True, 
                        help='Root directory containing subdirectories with WAV files')
     parser.add_argument('--output_dir', required=True,
-                       help='Base directory where output text files will be saved')
+                       help='Base directory where output json files will be saved')
     parser.add_argument('--model_url', required=True,
                        help='TensorFlow Hub model URL or path')
     
