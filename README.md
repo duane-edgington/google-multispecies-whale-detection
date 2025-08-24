@@ -56,6 +56,25 @@ run the model over the resampled 5 sec chunks
 
 python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/ --output_dir ./results --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"
 
+to convert json output to a csv file (one file per directory)
+
+python3 json_to_csv_expanded_natsort.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/2018/04/scores/MARS_20180420_224913_resampled_24kHz  MARS_20180405_105913.csv
+
+
+### convert the json output files to a csv files, lists expanded so that each key and value is in a separate column
+
+# Basic usage - automatic output filename
+python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz
+
+# With custom output filename
+python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz -o results.csv
+
+# With custom output path and verbose mode
+python json_to_csv_expanded_natsort.py /path/to/data -o /output/path/processed_data.csv -v
+
+# Show help
+python json_to_csv_expanded_natsort.py --help
+## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on
 a particular machine ("gizo"), where `/mnt/PAM_Analysis/` is a base directory
