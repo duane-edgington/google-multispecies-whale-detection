@@ -46,7 +46,14 @@ If need to generate 5 sec chunk files from the resampled 24kHz files, run 
      
       python3 chunk_resampled.py
 
-This program runs over one directory. Needs a script to loop over all the directories. Directory name is an argument to the program.
+Args:
+        input_directory: Input directory path
+
+        chunk_duration: Duration of each chunk in seconds
+    
+    Returns:
+
+        Processing statistics
 
 
 
