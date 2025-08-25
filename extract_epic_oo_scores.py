@@ -54,38 +54,68 @@ def calculate_epic_seconds(base_datetime, chunk_number):
 
 def extract_oo_class_score(json_data):
     """
-    Extract the score from Oo class_name from JSON data.
-    Looks for keys containing 'Oo' and 'score' or similar patterns.
+    Extract the Oo class score from the JSON data by finding the index of "Oo"
+    in the "class_names" list and getting the corresponding score from the "score" list.
     """
-    # Try to find Oo class score using various patterns
-    if isinstance(json_data, dict):
-        # Pattern 1: Direct key access
-        if 'Oo' in json_data and isinstance(json_data['Oo'], dict):
-            if 'score' in json_data['Oo']:
-                return float(json_data['Oo']['score'])
-        
-        # Pattern 2: Class-based structure
-        for key, value in json_data.items():
-            if 'Oo' in key.lower() and isinstance(value, dict):
-                if 'score' in value:
-                    return float(value['score'])
-                elif 'confidence' in value:
-                    return float(value['confidence'])
-        
-        # Pattern 3: Look for any score value in the JSON
-        for key, value in json_data.items():
-            if 'score' in key.lower() and isinstance(value, (int, float)):
-                return float(value)
-            
-        # Pattern 4: Look for class predictions array
-        if 'classifications' in json_data or 'predictions' in json_data:
-            classes_key = 'classifications' if 'classifications' in json_data else 'predictions'
-            if isinstance(json_data[classes_key], list):
-                for class_item in json_data[classes_key]:
-                    if isinstance(class_item, dict) and 'Oo' in str(class_item.get('class_name', '')):
-                        return float(class_item.get('score', class_item.get('confidence', 0.0)))
+    # Look for class_names and score lists
+    if not isinstance(json_data, dict):
+        return 0.0
     
-    # If no Oo score found, return 0.0 or try to find any score
+    # Check if we have both class_names and score lists
+    if 'class_names' in json_data and 'scores' in json_data:
+        class_names = json_data['class_names']
+        scores = json_data['scores']
+        
+        if (isinstance(class_names, list) and isinstance(scores, list) and 
+            len(class_names) == len(scores)):
+            
+            # Find the index of "Oo" in class_names
+            try:
+                oo_index = class_names.index("Oo")
+                return float(scores[oo_index])
+            except ValueError:
+                # "Oo" not found in class_names
+                pass
+            except IndexError:
+                # Index out of range for scores list
+                pass
+    
+    # Alternative patterns if the above doesn't work
+    # Look for nested structures with class_names and scores
+    for key, value in json_data.items():
+        if isinstance(value, dict):
+            if 'class_names' in value and 'scores' in value:
+                class_names = value['class_names']
+                scores = value['scores']
+                
+                if (isinstance(class_names, list) and isinstance(scores, list) and 
+                    len(class_names) == len(scores)):
+                    
+                    try:
+                        oo_index = class_names.index("Oo")
+                        return float(scores[oo_index])
+                    except (ValueError, IndexError):
+                        continue
+    
+    # Look for classification arrays
+    if 'classifications' in json_data and isinstance(json_data['classifications'], list):
+        for classification in json_data['classifications']:
+            if (isinstance(classification, dict) and 
+                'class_names' in classification and 'scores' in classification):
+                
+                class_names = classification['class_names']
+                scores = classification['scores']
+                
+                if (isinstance(class_names, list) and isinstance(scores, list) and 
+                    len(class_names) == len(scores)):
+                    
+                    try:
+                        oo_index = class_names.index("Oo")
+                        return float(scores[oo_index])
+                    except (ValueError, IndexError):
+                        continue
+    
+    # If no Oo score found, return 0.0
     return 0.0
 
 def process_json_directory(input_directory, output_file=None):
@@ -108,7 +138,7 @@ def process_json_directory(input_directory, output_file=None):
     # Automatically derive output filename if not provided
     if output_file is None:
         base_name = dir_path.name
-        output_file = dir_path.parent / f"{base_name}_epic_scores.csv"
+        output_file = dir_path.parent / f"{base_name}_epic_oo_scores.csv"
     else:
         output_file = Path(output_file)
     
@@ -172,6 +202,10 @@ def process_json_directory(input_directory, output_file=None):
     print(f"Time range: {results[0]['epic_seconds']} to {results[-1]['epic_seconds']} epic seconds")
     print(f"Oo score range: {min(r['Oo_class_score'] for r in results):.6f} to {max(r['Oo_class_score'] for r in results):.6f}")
     
+    # Count files with non-zero Oo scores
+    non_zero_count = sum(1 for r in results if r['Oo_class_score'] > 0)
+    print(f"Files with Oo scores > 0: {non_zero_count}/{len(results)}")
+    
     return str(output_file)
 
 def main():
@@ -179,12 +213,12 @@ def main():
     Main function with argparse argument handling.
     """
     parser = argparse.ArgumentParser(
-        description='Extract epic seconds and Oo class scores from JSON files.',
+        description='Extract epic seconds and Oo class scores from JSON files. Oo score is extracted from the score list at the position where class_names contains "Oo".',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   %(prog)s MARS_20180413_065913_resampled_24kHz
-  %(prog)s /path/to/data --output epic_scores.csv
+  %(prog)s /path/to/data --output oo_scores.csv
   %(prog)s /path/to/json_files -o results/epic_oo_scores.csv
         """
     )
@@ -206,9 +240,28 @@ Examples:
         help='Enable verbose output with additional information'
     )
     
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug mode to print JSON structure of first file'
+    )
+    
     args = parser.parse_args()
     
     try:
+        if args.debug:
+            # Debug: print structure of first JSON file
+            dir_path = Path(args.input_directory)
+            json_files = list(dir_path.glob("*.json"))
+            if json_files:
+                json_files.sort(key=lambda x: extract_chunk_number(x.name))
+                first_file = json_files[0]
+                print(f"Debug: Structure of first file {first_file.name}:")
+                with open(first_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    print(json.dumps(data, indent=2))
+                print("\n" + "="*50 + "\n")
+        
         output_file = process_json_directory(args.input_directory, args.output_file)
         
         if args.verbose:
