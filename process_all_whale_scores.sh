@@ -27,7 +27,7 @@ find "$IN_DIR" -type d -name "MARS_*" | while read -r DIR; do
         echo "Processing directory: $DIR (contains $JSON_COUNT JSON files)"
         
         # Run the Python script with the directory as input
-        python3 extract_epic_oo_scores.py "$DIR" &
+        python3 extract_epoch_oo_scores.py "$DIR" &
         
         COUNT=$((COUNT + 1))
         
