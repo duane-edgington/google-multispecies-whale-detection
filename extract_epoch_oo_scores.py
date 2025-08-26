@@ -120,7 +120,7 @@ def extract_oo_class_score(json_data):
 
 def process_json_directory(input_directory, output_file=None):
     """
-    Process JSON files and create CSV with epic seconds and Oo class score.
+    Process JSON files and create CSV with epoch seconds and Oo class score.
     """
     dir_path = Path(input_directory)
     
@@ -138,7 +138,7 @@ def process_json_directory(input_directory, output_file=None):
     # Automatically derive output filename if not provided
     if output_file is None:
         base_name = dir_path.name
-        output_file = dir_path.parent / f"{base_name}_epic_oo_scores.csv"
+        output_file = dir_path.parent / f"{base_name}_epoch_oo_scores.csv"
     else:
         output_file = Path(output_file)
     
@@ -199,7 +199,7 @@ def process_json_directory(input_directory, output_file=None):
     print(f"Input directory: {input_directory}")
     print(f"Output file: {output_file}")
     print(f"Base datetime: {base_datetime.strftime('%Y-%m-%d %H:%M:%S UTC')}")
-    print(f"Time range: {results[0]['epic_seconds']} to {results[-1]['epic_seconds']} epic seconds")
+    print(f"Time range: {results[0]['epoch_seconds']} to {results[-1]['epoch_seconds']} epoch seconds")
     print(f"Oo score range: {min(r['Oo_class_score'] for r in results):.6f} to {max(r['Oo_class_score'] for r in results):.6f}")
     
     # Count files with non-zero Oo scores
@@ -219,7 +219,7 @@ def main():
 Examples:
   %(prog)s MARS_20180413_065913_resampled_24kHz
   %(prog)s /path/to/data --output oo_scores.csv
-  %(prog)s /path/to/json_files -o results/epic_oo_scores.csv
+  %(prog)s /path/to/json_files -o results/epoch_oo_scores.csv
         """
     )
     
