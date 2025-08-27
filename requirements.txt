@@ -10,3 +10,4 @@ pytest
 usort
 ufmt
 pylint
+natsort
