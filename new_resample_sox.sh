@@ -40,7 +40,7 @@ for day in ${days}; do
     outfile="${out_dir}/${basename}_resampled_24kHz.wav"
     echo "infile = ${infile}"
     echo "outfile = ${outfile}"
-    sox "${infile}" -b 16 "${outfile}" rate -v 24000 highpass 10 fade 0.1 600 0.1 vol 3 &
+    sox "${infile}" -b 16 "${outfile}" rate -v 24000 highpass 10 fade 0.1 -0 0.1 vol 3 &
   done
 
 done
