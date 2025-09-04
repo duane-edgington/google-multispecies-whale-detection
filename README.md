@@ -83,16 +83,29 @@ to convert json output to a csv file (one file per directory)
 ### convert the json output files to a csv files, lists expanded so that each key and value is in a separate column
 
 # Basic usage - automatic output filename
-python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz
+     python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz
 
 # With custom output filename
-python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz -o results.csv
+     python json_to_csv_expanded_natsort.py MARS_20180413_065913_resampled_24kHz -o results.csv
 
 # With custom output path and verbose mode
-python json_to_csv_expanded_natsort.py /path/to/data -o /output/path/processed_data.csv -v
+     python json_to_csv_expanded_natsort.py /path/to/data -o /output/path/processed_data.csv -v
 
 # Show help
-python json_to_csv_expanded_natsort.py --help
+     python json_to_csv_expanded_natsort.py --help
+
+# iterate over all the directories
+
+     ./process_all_json_to_csv_sinc.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04/
+
+### convert to csv files containing only epoch time of score (beginning of wav file analyzed) and model output score for one class
+
+      extract_epoch_key_scores.py 
+
+       process_all_key_scores.sh
+# example
+       nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 > logs/nohup_scores_sinc_2018_04.out &
+     
 ## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on
