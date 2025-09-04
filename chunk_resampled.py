@@ -220,10 +220,10 @@ def main():
 # Example usage
 if __name__ == "__main__":
     # Direct usage example
-    input_dir = '/mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2018/04/'
+    input_dir = '/mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2020/10/'
     
     # Process the directory
     stats = specific_orca_chunking_processor(input_dir, chunk_duration=5.0)
     
     # Alternatively, use command line:
-    # python script.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2018/04/ --chunk-duration 5.0
+    # python3 chunk_resampled..py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2018/04/ --chunk-duration 5.0
