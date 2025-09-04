@@ -40,6 +40,10 @@ If need to generate resampled 24kHz files from PAM archive, run 
 
 new_resample_sox.sh
 
+example:
+
+      nohup ./new_resample_sox.sh 2020 10 > logs/nohump_resample_2020_10.out &
+
 These will go to  /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/ 
 
 If need to generate 5 sec chunk files from the resampled 24kHz files, run      
