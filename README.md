@@ -42,13 +42,15 @@ new_resample_sox.sh
 
 example:
 
-      nohup ./new_resample_sox.sh 2020 10 > logs/nohump_resample_2020_10.out &
+      nohup ./new_resample_sox.sh 2020 10 > logs/nohup_resample_2020_10.out &
 
 These will go to  /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/ 
 
 If need to generate 5 sec chunk files from the resampled 24kHz files, run      
      
       python3 chunk_resampled.py
+
+      nohup python3 chunk_resampled.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2020/10/ > logs/nohup_chunk_2020_10.out &
 
 Args:
         input_directory: Input directory path
@@ -65,11 +67,17 @@ Args:
 
 run the model over the resampled 5 sec chunks
 
-python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/ --output_dir ./results --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"
+       python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/ --output_dir ./results --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"
+
+        nohup python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2020/10/ --output_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2" > logs/nohup_run_model_2020_10.out &
+
+check run status with htop
+
+         htop
 
 to convert json output to a csv file (one file per directory)
 
-python3 json_to_csv_expanded_natsort.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/2018/04/scores/MARS_20180420_224913_resampled_24kHz  MARS_20180405_105913.csv
+      python3 json_to_csv_expanded_natsort.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/2018/04/scores/MARS_20180420_224913_resampled_24kHz  MARS_20180405_105913.csv
 
 
 ### convert the json output files to a csv files, lists expanded so that each key and value is in a separate column
