@@ -104,8 +104,21 @@ to convert json output to a csv file (one file per directory)
 
        process_all_key_scores.sh
 # example
-       nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 > logs/nohup_scores_sinc_2018_04.out &
+       nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 Oo > logs/nohup_scores_sinc_2018_04.out &
      
+       ./process_all_key_scores.sh /path/to/scores Oo
+
+       ./process_all_key_scores.sh /path/to/scores Mn
+
+       ./process_all_key_scores.sh /path/to/scores Bm
+
+       ./process_all_key_scores.sh /path/to/scores Whistle
+
+       ./process_all_key_scores.sh /path/to/scores Upcall
+
+
+
+
 ## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on

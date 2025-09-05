@@ -1,11 +1,22 @@
 #!/bin/bash
 
-# Script to recursively process all whale model directories
-# Usage: ./process_all_whale_scores.sh [input_directory]
+# Script to recursively process all google multispecies-whale model directories
+# each directory contains json files with key values
+# Usage: ./process_all_key_scores.sh [input_directory] [key]
 
 # Set default input directory
 DEFAULT_IN_DIR="/mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores"
 IN_DIR="${1:-$DEFAULT_IN_DIR}"
+
+# Check if key parameter is provided
+if [ -z "$2" ]; then
+    echo "Error: Key parameter is required"
+    echo "Usage: $0 [input_directory] [key]"
+    echo "Example: $0 /path/to/scores Oo"
+    exit 1
+fi
+
+KEY="$2"
 
 # Check if the input directory exists
 if [ ! -d "$IN_DIR" ]; then
@@ -14,6 +25,7 @@ if [ ! -d "$IN_DIR" ]; then
 fi
 
 echo "Recursively processing directories in: $IN_DIR"
+echo "Using key: $KEY"
 
 # Counter for processed directories
 COUNT=0
@@ -26,8 +38,8 @@ find "$IN_DIR" -type d -name "MARS_*" | while read -r DIR; do
     if [ "$JSON_COUNT" -gt 0 ]; then
         echo "Processing directory: $DIR (contains $JSON_COUNT JSON files)"
         
-        # Run the Python script with the directory as input
-        python3 extract_epoch_key_scores.py "$DIR" --key=Bm &
+        # Run the Python script with the directory and key as input
+        python3 extract_epoch_key_scores.py "$DIR" --key="$KEY" &
         
         COUNT=$((COUNT + 1))
         
