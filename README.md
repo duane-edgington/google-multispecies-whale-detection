@@ -98,6 +98,9 @@ to convert json output to a csv file (one file per directory)
 
      ./process_all_json_to_csv_sinc.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04/
 
+# another exaample
+       nohup ./process_all_json_to_csv.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ > logs/nohup_process_all_json_to_csv_2020_10.out &
+
 ### convert to csv files containing only epoch time of score (beginning of wav file analyzed) and model output score for one class
 
       extract_epoch_key_scores.py 
@@ -105,8 +108,6 @@ to convert json output to a csv file (one file per directory)
        process_all_key_scores.sh
 # example
        nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 Oo > logs/nohup_scores_sinc_2018_04.out &
-     
-       ./process_all_key_scores.sh /path/to/scores Oo
 
        ./process_all_key_scores.sh /path/to/scores Mn
 
