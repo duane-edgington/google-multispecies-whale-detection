@@ -108,6 +108,8 @@ to convert json output to a csv file (one file per directory)
        process_all_key_scores.sh
 # example
        nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 Oo > logs/nohup_scores_sinc_2018_04.out &
+# another example
+       nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ Mn > logs/nohup_scores_mn_2020_10.out &
 
        ./process_all_key_scores.sh /path/to/scores Mn
 
