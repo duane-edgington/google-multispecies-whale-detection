@@ -120,7 +120,10 @@ to convert json output to a csv file (one file per directory)
        ./process_all_key_scores.sh /path/to/scores Upcall
 
 
+# display the number of directories in a particular directory 
+useful to display how many output directories of score json files is generated. Should equal the number of starting .wav files
 
+       find /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ -maxdepth 1 -mindepth 1 -type d | wc -l
 
 ## below needs update
 
