@@ -11,6 +11,10 @@ import json
 import time
 from datetime import timedelta
 
+# Disable all GPUs
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
+
 def process_wav_file(model, wav_file_path, output_json_path):
     """
     Process a single WAV file using the loaded TensorFlow model

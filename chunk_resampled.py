@@ -29,6 +29,8 @@ def chunk_audio_file(input_file: Path, output_dir: Path, chunk_duration: float =
         # Calculate chunk size in samples
         chunk_size = int(chunk_duration * sample_rate)
         total_samples = len(audio_data)
+
+        logger.info(f"chunk size: {chunk_size}, total samples: {total_samples}")
         
         # Calculate expected number of chunks for 600-second file
         expected_chunks = 120
