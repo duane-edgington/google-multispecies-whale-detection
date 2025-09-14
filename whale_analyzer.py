@@ -97,207 +97,207 @@ def process_csv_files(directory, file_pattern, name_pattern, num_bins):
         print(f"No CSV files found in {directory} with pattern {file_pattern}")
         return None
     
-    print(f"Found {len(csv_files)} CSV files initially...")
-    
-    # Filter files by name pattern
-    csv_files = filter_files_by_pattern(csv_files, name_pattern)
-    
-    if not csv_files:
-        print(f"No files found containing pattern '{name_pattern}'")
-        return None
-    
-    print(f"Processing {len(csv_files)} files containing pattern '{name_pattern}'...")
-    
-    for file_path in csv_files:
-        try:
-            # Get column names from first row
-            current_column_names = get_column_names(file_path)
-            if current_column_names is None:
-                print(f"Skipping {os.path.basename(file_path)} - could not read column names")
+        print(f"Found {len(csv_files)} CSV files initially...")
+        
+        # Filter files by name pattern
+        csv_files = filter_files_by_pattern(csv_files, name_pattern)
+        
+        if not csv_files:
+            print(f"No files found containing pattern '{name_pattern}'")
+            return None
+        
+        print(f"Processing {len(csv_files)} files containing pattern '{name_pattern}'...")
+        
+        for file_path in csv_files:
+            try:
+                # Get column names from first row
+                current_column_names = get_column_names(file_path)
+                if current_column_names is None:
+                    print(f"Skipping {os.path.basename(file_path)} - could not read column names")
+                    continue
+                
+                # Use the first file's column names as reference
+                if column_names is None:
+                    column_names = current_column_names
+                elif current_column_names != column_names:
+                    print(f"Warning: Column names in {os.path.basename(file_path)} differ from first file")
+                    print(f"Expected: {column_names}")
+                    print(f"Found: {current_column_names}")
+                
+                # Read CSV file, skipping the first row (header)
+                df = pd.read_csv(file_path, skiprows=1, header=None, names=column_names)
+                
+                # Extract date information
+                year, month = extract_date_info_from_path(file_path, directory)
+                
+                # Add metadata
+                df['year'] = year
+                df['month'] = month
+                df['filename'] = os.path.basename(file_path)
+                
+                all_data.append(df)
+                print(f"Processed: {os.path.basename(file_path)}")
+                
+            except Exception as e:
+                print(f"Error processing {os.path.basename(file_path)}: {e}")
                 continue
-            
-            # Use the first file's column names as reference
-            if column_names is None:
-                column_names = current_column_names
-            elif current_column_names != column_names:
-                print(f"Warning: Column names in {os.path.basename(file_path)} differ from first file")
-                print(f"Expected: {column_names}")
-                print(f"Found: {current_column_names}")
-            
-            # Read CSV file, skipping the first row (header)
-            df = pd.read_csv(file_path, skiprows=1, header=None, names=column_names)
-            
-            # Extract date information
-            year, month = extract_date_info_from_path(file_path, directory)
-            
-            # Add metadata
-            df['year'] = year
-            df['month'] = month
-            df['filename'] = os.path.basename(file_path)
-            
-            all_data.append(df)
-            print(f"Processed: {os.path.basename(file_path)}")
-            
-        except Exception as e:
-            print(f"Error processing {os.path.basename(file_path)}: {e}")
-            continue
-    
-    if not all_data:
-        print("No data was successfully processed")
-        return None
-    
-    # Combine all data
-    combined_df = pd.concat(all_data, ignore_index=True)
-    
-    # Convert epoch time to datetime
-    # Use the actual column name from the header for epoch time
-    epoch_col = column_names[0] if len(column_names) >= 1 else 'epoch_time'
-    combined_df['datetime'] = pd.to_datetime(combined_df[epoch_col], unit='s')
-    
-    # Calculate statistics
-    score_col = column_names[1] if len(column_names) >= 2 else 'score'
-    stats = {
-        'total_files': len(csv_files),
-        'files_processed': len(all_data),
-        'total_samples': len(combined_df),
-        'score_mean': combined_df[score_col].mean(),
-        'score_std': combined_df[score_col].std(),
-        'score_min': combined_df[score_col].min(),
-        'score_max': combined_df[score_col].max(),
-        'date_range': (combined_df['datetime'].min(), combined_df['datetime'].max()),
-        'column_names': column_names,
-        'name_pattern': name_pattern
-    }
-    
-    # Create histogram data for both linear and log scales
-    hist_counts, hist_bins = np.histogram(combined_df[score_col], bins=num_bins)
-    
-    # Calculate log counts (handle zero counts by adding small epsilon)
-    log_counts = np.log10(hist_counts + 1e-10)  # Add small epsilon to avoid log(0)
-    
-    return {
-        'dataframe': combined_df,
-        'stats': stats,
-        'hist_counts': hist_counts,
-        'log_hist_counts': log_counts,
-        'hist_bins': hist_bins,
-        'years_months': combined_df[['year', 'month']].drop_duplicates(),
-        'column_names': column_names
-    }
+        
+        if not all_data:
+            print("No data was successfully processed")
+            return None
+        
+        # Combine all data
+        combined_df = pd.concat(all_data, ignore_index=True)
+        
+        # Convert epoch time to datetime
+        # Use the actual column name from the header for epoch time
+        epoch_col = column_names[0] if len(column_names) >= 1 else 'epoch_time'
+        combined_df['datetime'] = pd.to_datetime(combined_df[epoch_col], unit='s')
+        
+        # Calculate statistics
+        score_col = column_names[1] if len(column_names) >= 2 else 'score'
+        stats = {
+            'total_files': len(csv_files),
+            'files_processed': len(all_data),
+            'total_samples': len(combined_df),
+            'score_mean': combined_df[score_col].mean(),
+            'score_std': combined_df[score_col].std(),
+            'score_min': combined_df[score_col].min(),
+            'score_max': combined_df[score_col].max(),
+            'date_range': (combined_df['datetime'].min(), combined_df['datetime'].max()),
+            'column_names': column_names,
+            'name_pattern': name_pattern
+        }
+        
+        # Create histogram data for both linear and log scales
+        hist_counts, hist_bins = np.histogram(combined_df[score_col], bins=num_bins)
+        
+        # Calculate log counts (handle zero counts by adding small epsilon)
+        log_counts = np.log10(hist_counts + 1e-10)  # Add small epsilon to avoid log(0)
+        
+        return {
+            'dataframe': combined_df,
+            'stats': stats,
+            'hist_counts': hist_counts,
+            'log_hist_counts': log_counts,
+            'hist_bins': hist_bins,
+            'years_months': combined_df[['year', 'month']].drop_duplicates(),
+            'column_names': column_names
+        }
 
-def create_plots(analysis_data, num_bins, output_file, time_period):
-    """Create and save summary plots"""
-    df = analysis_data['dataframe']
-    stats = analysis_data['stats']
-    hist_counts = analysis_data['hist_counts']
-    log_hist_counts = analysis_data['log_hist_counts']
-    hist_bins = analysis_data['hist_bins']
-    column_names = analysis_data['column_names']
-    name_pattern = stats['name_pattern']
-    
-    # Get actual column names from the CSV headers
-    epoch_col = column_names[0] if len(column_names) >= 1 else 'epoch_time'
-    score_col = column_names[1] if len(column_names) >= 2 else 'score'
-    
-    # Create figure with subplots - now 3x2 grid
-    fig, axes = plt.subplots(3, 2, figsize=(18, 20))
-    fig.suptitle(f'Whale Detection Score Analysis - Pattern: "{name_pattern}"', fontsize=16, fontweight='bold')
-    
-    # Unpack axes for easier access
-    ax1, ax2 = axes[0]  # Histograms
-    ax3, ax4 = axes[1]  # Time series and boxplot
-    ax5, ax6 = axes[2]  # Enhanced time series and statistics
-    
-    # Plot 1: Histogram of scores (linear scale)
-    ax1.bar(hist_bins[:-1], hist_counts, width=np.diff(hist_bins), 
-            edgecolor='black', alpha=0.7, label=score_col)
-    ax1.set_xlabel(score_col)
-    ax1.set_ylabel('Number of Samples')
-    ax1.set_title(f'{score_col} Distribution - Linear Scale ({num_bins} bins)')
-    ax1.grid(True, alpha=0.3)
-    ax1.legend()
-    
-    # Plot 2: Histogram of scores (logarithmic scale)
-    ax2.bar(hist_bins[:-1], hist_counts, width=np.diff(hist_bins), 
-            edgecolor='black', alpha=0.7, label=score_col)
-    ax2.set_yscale('log')
-    ax2.set_xlabel(score_col)
-    ax2.set_ylabel('Number of Samples (log₁₀)')
-    ax2.set_title(f'{score_col} Distribution - Logarithmic Scale ({num_bins} bins)')
-    ax2.grid(True, alpha=0.3)
-    ax2.legend()
-    
-    # Plot 3: Basic time series of scores (sampled)
-    time_sample = df.sample(min(1000, len(df)))  # Sample for plotting efficiency
-    ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.6, s=10, label=score_col)
-    ax3.set_xlabel('Time')
-    ax3.set_ylabel(score_col)
-    ax3.set_title(f'{score_col} Time Series (1,000 samples)')
-    ax3.grid(True, alpha=0.3)
-    ax3.legend()
-    plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
-    
-    # Plot 4: Boxplot by year-month
-    # Fixed: Changed ast(str) to astype(str)
-    df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
-    # Sample for plotting efficiency if too many groups
-    unique_groups = df['year_month'].nunique()
-    if unique_groups > 12:
-        # Group by year only if too many months
-        df['year_month'] = df['year'].astype(str)
-    
-    # Manual sampling to avoid deprecation warnings
-    sampled_dfs = []
-    for group_name, group_data in df.groupby('year_month'):
-        sampled_group = group_data.sample(min(100, len(group_data)))
-        sampled_dfs.append(sampled_group)
-    
-    sampled_df = pd.concat(sampled_dfs, ignore_index=True)
-    
-    # Create boxplot data
-    boxplot_data = []
-    labels = []
-    for group_name, group_data in sampled_df.groupby('year_month'):
-        boxplot_data.append(group_data[score_col].values)
-        labels.append(group_name)
-    
-    ax4.boxplot(boxplot_data, tick_labels=labels)
-    ax4.set_title(f'{score_col} Distribution by Time Period')
-    ax4.set_ylabel(score_col)
-    ax4.tick_params(axis='x', rotation=45)
-    
-    # Plot 5: Enhanced time series with individual points and period means
-    # Sample up to 100,000 individual points
-    max_samples = min(100000, len(df))
-    time_sample_large = df.sample(max_samples, random_state=42)  # Fixed seed for reproducibility
-    
-    # Plot individual samples as light grey dots
-    ax5.scatter(time_sample_large['datetime'], time_sample_large[score_col], 
-               alpha=0.3, s=2, color='grey', label='Individual samples')
-    
-    # Calculate mean scores for the specified time period
-    period_map = {
-        '10T': '10 Minutes', '30T': '30 Minutes', 'H': 'Hour',
-        '2H': '2 Hours', '6H': '6 Hours', '12H': '12 Hours',
-        'D': 'Day', 'W': 'Week', 'M': 'Month'
-    }
-    period_name = period_map.get(time_period, f'{time_period} period')
-    
-    # Resample to get mean scores for each period
-    df_resampled = df.set_index('datetime')
-    period_means = df_resampled[score_col].resample(time_period).mean()
-    
-    # Plot period means as larger black dots
-    ax5.scatter(period_means.index, period_means.values, 
-               alpha=0.9, s=50, color='black', label=f'{period_name} means')
-    
-    ax5.set_xlabel('Time')
-    ax5.set_ylabel(score_col)
-    ax5.set_title(f'{score_col} Time Series: Individual Samples + {period_name} Means\n({max_samples:,} samples)')
-    ax5.grid(True, alpha=0.3)
-    ax5.legend()
-    plt.setp(ax5.xaxis.get_majorticklabels(), rotation=45)
-    
+    def create_plots(analysis_data, num_bins, output_file, time_period):
+        """Create and save summary plots"""
+        df = analysis_data['dataframe']
+        stats = analysis_data['stats']
+        hist_counts = analysis_data['hist_counts']
+        log_hist_counts = analysis_data['log_hist_counts']
+        hist_bins = analysis_data['hist_bins']
+        column_names = analysis_data['column_names']
+        name_pattern = stats['name_pattern']
+        
+        # Get actual column names from the CSV headers
+        epoch_col = column_names[0] if len(column_names) >= 1 else 'epoch_time'
+        score_col = column_names[1] if len(column_names) >= 2 else 'score'
+        
+        # Create figure with subplots - now 3x2 grid
+        fig, axes = plt.subplots(3, 2, figsize=(18, 20))
+        fig.suptitle(f'Whale Detection Score Analysis - Pattern: "{name_pattern}"', fontsize=16, fontweight='bold')
+        
+        # Unpack axes for easier access
+        ax1, ax2 = axes[0]  # Histograms
+        ax3, ax4 = axes[1]  # Time series and boxplot
+        ax5, ax6 = axes[2]  # Enhanced time series and statistics
+        
+        # Plot 1: Histogram of scores (linear scale)
+        ax1.bar(hist_bins[:-1], hist_counts, width=np.diff(hist_bins), 
+                edgecolor='black', alpha=0.7, label=score_col)
+        ax1.set_xlabel(score_col)
+        ax1.set_ylabel('Number of Samples')
+        ax1.set_title(f'{score_col} Distribution - Linear Scale ({num_bins} bins)')
+        ax1.grid(True, alpha=0.3)
+        ax1.legend()
+        
+        # Plot 2: Histogram of scores (logarithmic scale)
+        ax2.bar(hist_bins[:-1], hist_counts, width=np.diff(hist_bins), 
+                edgecolor='black', alpha=0.7, label=score_col)
+        ax2.set_yscale('log')
+        ax2.set_xlabel(score_col)
+        ax2.set_ylabel('Number of Samples (log₁₀)')
+        ax2.set_title(f'{score_col} Distribution - Logarithmic Scale ({num_bins} bins)')
+        ax2.grid(True, alpha=0.3)
+        ax2.legend()
+        
+        # Plot 3: Basic time series of scores (sampled)
+        time_sample = df.sample(min(10000, len(df)))  # Sample for plotting efficiency
+        ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.6, s=10, label=score_col)
+        ax3.set_xlabel('Time')
+        ax3.set_ylabel(score_col)
+        ax3.set_title(f'{score_col} Time Series (10,000 samples)')
+        ax3.grid(True, alpha=0.3)
+        ax3.legend()
+        plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
+        
+        # Plot 4: Boxplot by year-month
+        # Fixed: Changed ast(str) to astype(str)
+        df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
+        # Sample for plotting efficiency if too many groups
+        unique_groups = df['year_month'].nunique()
+        if unique_groups > 12:
+            # Group by year only if too many months
+            df['year_month'] = df['year'].astype(str)
+        
+        # Manual sampling to avoid deprecation warnings
+        sampled_dfs = []
+        for group_name, group_data in df.groupby('year_month'):
+            sampled_group = group_data.sample(min(100, len(group_data)))
+            sampled_dfs.append(sampled_group)
+        
+        sampled_df = pd.concat(sampled_dfs, ignore_index=True)
+        
+        # Create boxplot data
+        boxplot_data = []
+        labels = []
+        for group_name, group_data in sampled_df.groupby('year_month'):
+            boxplot_data.append(group_data[score_col].values)
+            labels.append(group_name)
+        
+        ax4.boxplot(boxplot_data, tick_labels=labels)
+        ax4.set_title(f'{score_col} Distribution by Time Period')
+        ax4.set_ylabel(score_col)
+        ax4.tick_params(axis='x', rotation=45)
+        
+        # Plot 5: Enhanced time series with individual points and period means
+        # Sample up to 100,000 individual points
+        max_samples = min(100000, len(df))
+        time_sample_large = df.sample(max_samples, random_state=42)  # Fixed seed for reproducibility
+        
+        # Plot individual samples as light grey dots
+        ax5.scatter(time_sample_large['datetime'], time_sample_large[score_col], 
+                   alpha=0.3, s=2, color='grey', label='Individual samples')
+        
+        # Calculate mean scores for the specified time period
+        period_map = {
+            '10T': '10 Minutes', '30T': '30 Minutes', 'H': 'Hour',
+            '2H': '2 Hours', '6H': '6 Hours', '12H': '12 Hours',
+            'D': 'Day', 'W': 'Week', 'M': 'Month'
+        }
+        period_name = period_map.get(time_period, f'{time_period} period')
+        
+        # Resample to get mean scores for each period
+        df_resampled = df.set_index('datetime')
+        period_means = df_resampled[score_col].resample(time_period).mean()
+        
+        # Plot period means as larger black dots
+        ax5.scatter(period_means.index, period_means.values, 
+                   alpha=0.9, s=50, color='black', label=f'{period_name} means')
+        
+        ax5.set_xlabel('Time')
+        ax5.set_ylabel(score_col)
+        ax5.set_title(f'{score_col} Time Series: Individual Samples + {period_name} Means\n({max_samples:,} samples)')
+        ax5.grid(True, alpha=0.3)
+        ax5.legend()
+        plt.setp(ax5.xaxis.get_majorticklabels(), rotation=45)
+        
     # Plot 6: Statistics table with column information
     ax6.axis('off')
     stats_text = [
