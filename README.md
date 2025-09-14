@@ -149,7 +149,9 @@ Statistics (number of samples, etc)
 
 Example
 
-       python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 --name-pattern "epoch_oo_scores" --bins 10 --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
+       python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 \
+           --name-pattern "epoch_oo_scores" --bins 10 --time-period "10T" \
+           --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
 ## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on
