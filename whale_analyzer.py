@@ -26,8 +26,8 @@ def parse_arguments():
                        help='File pattern to match (default: *.csv)')
     parser.add_argument('--name-pattern', type=str, required=True,
                        help='Filename pattern that must be contained in the filename (e.g., "epoch_oo_scores")')
-    parser.add_argument('--time-period', type=str, default='D', choices=['H', 'D', 'W', 'M'],
-                       help='Time period for mean calculation: H=hour, D=day, W=week, M=month (default: D)')
+    parser.add_argument('--time-period', type=str, default='D', 
+                       help='Time period for mean calculation. Options: H=hour, D=day, W=week, M=month, 10T=10min, 30T=30min, etc. (default: D)')
     return parser.parse_args()
 
 def extract_date_info_from_path(file_path, directory_path):
@@ -228,17 +228,17 @@ def create_plots(analysis_data, num_bins, output_file, time_period):
     ax2.legend()
     
     # Plot 3: Basic time series of scores (sampled)
-    time_sample = df.sample(min(1000, len(df)))  # Sample for plotting efficiency
+    time_sample = df.sample(min(10000, len(df)))  # Sample for plotting efficiency
     ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.6, s=10, label=score_col)
     ax3.set_xlabel('Time')
     ax3.set_ylabel(score_col)
-    ax3.set_title(f'{score_col} Time Series (1,000 samples)')
+    ax3.set_title(f'{score_col} Time Series (10,000 samples)')
     ax3.grid(True, alpha=0.3)
     ax3.legend()
     plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
     
     # Plot 4: Boxplot by year-month
-    df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
+    df['year_month'] = df['year'].astype(str) + '-' + df['month'].ast(str).str.zfill(2)
     # Sample for plotting efficiency if too many groups
     unique_groups = df['year_month'].nunique()
     if unique_groups > 12:
@@ -275,8 +275,12 @@ def create_plots(analysis_data, num_bins, output_file, time_period):
                alpha=0.3, s=2, color='grey', label='Individual samples')
     
     # Calculate mean scores for the specified time period
-    period_map = {'H': 'Hour', 'D': 'Day', 'W': 'Week', 'M': 'Month'}
-    period_name = period_map.get(time_period, 'Day')
+    period_map = {
+        '10T': '10 Minutes', '30T': '30 Minutes', 'H': 'Hour',
+        '2H': '2 Hours', '6H': '6 Hours', '12H': '12 Hours',
+        'D': 'Day', 'W': 'Week', 'M': 'Month'
+    }
+    period_name = period_map.get(time_period, f'{time_period} period')
     
     # Resample to get mean scores for each period
     df_resampled = df.set_index('datetime')
@@ -284,11 +288,11 @@ def create_plots(analysis_data, num_bins, output_file, time_period):
     
     # Plot period means as larger black dots
     ax5.scatter(period_means.index, period_means.values, 
-               alpha=0.9, s=50, color='black', label=f'{period_name}ly means')
+               alpha=0.9, s=50, color='black', label=f'{period_name} means')
     
     ax5.set_xlabel('Time')
     ax5.set_ylabel(score_col)
-    ax5.set_title(f'{score_col} Time Series: Individual Samples + {period_name}ly Means\n({max_samples:,} samples)')
+    ax5.set_title(f'{score_col} Time Series: Individual Samples + {period_name} Means\n({max_samples:,} samples)')
     ax5.grid(True, alpha=0.3)
     ax5.legend()
     plt.setp(ax5.xaxis.get_majorticklabels(), rotation=45)
