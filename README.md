@@ -129,6 +129,24 @@ useful to display how many output directories of score json files is generated. 
 
        find /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ -maxdepth 1 -mindepth 1 -type d | wc -l
 
+## analysis of results
+Program to create plots of scores in a period
+
+Histogram of distribution of scores (from 0 to 1)
+
+Histogram of log(10) of distribution of scores
+
+Scatter plot of class score vs time
+
+Distibution of class score 
+
+Statistics (number of samples, etc)
+
+       python whale_analyzer.py /path/to/csv/files --name-pattern "epoch_oo_scores" --bins 20 --output analysis.png
+
+Example
+
+       python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 --name-pattern "epoch_oo_scores" --bins 10 --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
 ## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on
