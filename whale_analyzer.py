@@ -228,17 +228,18 @@ def create_plots(analysis_data, num_bins, output_file, time_period):
     ax2.legend()
     
     # Plot 3: Basic time series of scores (sampled)
-    time_sample = df.sample(min(10000, len(df)))  # Sample for plotting efficiency
+    time_sample = df.sample(min(1000, len(df)))  # Sample for plotting efficiency
     ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.6, s=10, label=score_col)
     ax3.set_xlabel('Time')
     ax3.set_ylabel(score_col)
-    ax3.set_title(f'{score_col} Time Series (10,000 samples)')
+    ax3.set_title(f'{score_col} Time Series (1,000 samples)')
     ax3.grid(True, alpha=0.3)
     ax3.legend()
     plt.setp(ax3.xaxis.get_majorticklabels(), rotation=45)
     
     # Plot 4: Boxplot by year-month
-    df['year_month'] = df['year'].astype(str) + '-' + df['month'].ast(str).str.zfill(2)
+    # Fixed: Changed ast(str) to astype(str)
+    df['year_month'] = df['year'].astype(str) + '-' + df['month'].astype(str).str.zfill(2)
     # Sample for plotting efficiency if too many groups
     unique_groups = df['year_month'].nunique()
     if unique_groups > 12:
