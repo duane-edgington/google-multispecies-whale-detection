@@ -75,10 +75,13 @@ check run status with htop
 
          htop
 
-if conda has confused the system htop with one of its own:
+if conda has confused the system htop with one of its own copies:
 
          LD_LIBRARY_PATH=/usr/lib:/usr/lib64 /usr/bin/htop
+or
 
+         export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH htop
+         
 to convert json output to a csv file (one file per directory)
 
       python3 json_to_csv_expanded_natsort.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/2018/04/scores/MARS_20180420_224913_resampled_24kHz  MARS_20180405_105913.csv
