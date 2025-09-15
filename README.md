@@ -157,6 +157,9 @@ another example
        python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/11 \
            --name-pattern "epoch_mn_scores" --bins 10 --time-period "60T" \
            --output /mnt/PAM_Analysis/test/analysis_scores_mn_2020_11.png
+
+<img width="5371" height="5889" alt="analysis_scores_bp_2020_11" src="https://github.com/user-attachments/assets/33b94098-8295-47b8-9f6b-c91b8916fff6" />
+
 ## below needs update
 
 Default settings and examples below are mainly in terms of our own setup on
