@@ -168,16 +168,20 @@ Statistics (number of samples, etc)
        python whale_analyzer.py /path/to/csv/files --name-pattern "epoch_oo_scores" --bins 20 --output analysis.png
 
 Example
-
-       python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 \
+    python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 \
            --name-pattern "epoch_oo_scores" --bins 10 --time-period "10T" \
            --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
 
 another example
-
-       python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/11 \
+    python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/11 \
            --name-pattern "epoch_mn_scores" --bins 10 --time-period "60T" \
            --output /mnt/PAM_Analysis/test/analysis_scores_mn_2020_11.png
+
+an example with all points plotted on scatter plots
+    python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/05 \
+        --name-pattern "epoch_oo_scores" --bins 10 --time-period "60T" \
+        --output /mnt/PAM_Analysis/test/analysis_scores_oo_2018_05_a.png \
+        --plot3-samples 600000 --plot5-samples 600000
 
 # Use default sample sizes (10,000 for plot 3, 100,000 for plot 5)
        python whale_analyzer.py /path/to/files --name-pattern "epoch_oo_scores"
