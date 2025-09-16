@@ -168,6 +168,18 @@ another example
            --name-pattern "epoch_mn_scores" --bins 10 --time-period "60T" \
            --output /mnt/PAM_Analysis/test/analysis_scores_mn_2020_11.png
 
+# Use default sample sizes (10,000 for plot 3, 100,000 for plot 5)
+       python whale_analyzer.py /path/to/files --name-pattern "epoch_oo_scores"
+
+# Custom sample sizes
+       python whale_analyzer.py /path/to/files --name-pattern "epoch_oo_scores" --plot3-samples 5000 --plot5-samples 50000
+
+# High resolution with more samples
+       python whale_analyzer.py /path/to/files --name-pattern "epoch_oo_scores" --plot3-samples 20000 --plot5-samples 200000
+
+# Lower resolution for faster processing
+       python whale_analyzer.py /path/to/files --name-pattern "epoch_oo_scores" --plot3-samples 2000 --plot5-samples 20000
+
 <img width="5371" height="5889" alt="analysis_scores_bp_2020_11" src="https://github.com/user-attachments/assets/33b94098-8295-47b8-9f6b-c91b8916fff6" />
 
 ## below needs update
