@@ -27,7 +27,7 @@ def parse_arguments():
     parser.add_argument('--name-pattern', type=str, required=True,
                        help='Filename pattern that must be contained in the filename (e.g., "epoch_oo_scores")')
     parser.add_argument('--time-period', type=str, default='D', 
-                       help='Time period for mean calculation. Options: H=hour, D=day, W=week, M=month, 10T=10min, 30T=30min, etc. (default: D)')
+                       help='Time period for mean calculation. Options: min=minute, H=hour, D=day, W=week, M=month, 10min=10min, 30min=30min, etc. (default: D)')
     parser.add_argument('--plot3-samples', type=int, default=10000,
                        help='Number of samples for plot 3 (basic time series) (default: 10000)')
     parser.add_argument('--plot5-samples', type=int, default=100000,
@@ -280,15 +280,25 @@ def create_plots(analysis_data, num_bins, output_file, time_period, plot3_sample
     
     # Calculate mean scores for the specified time period
     period_map = {
-        '10T': '10 Minutes', '30T': '30 Minutes', 'H': 'Hour',
+        '10min': '10 Minutes', '30min': '30 Minutes', 'H': 'Hour',
         '2H': '2 Hours', '6H': '6 Hours', '12H': '12 Hours',
-        'D': 'Day', 'W': 'Week', 'M': 'Month'
+        'D': 'Day', 'W': 'Week', 'M': 'Month',
+        # Backward compatibility for deprecated 'T' format
+        '10T': '10 Minutes', '30T': '30 Minutes'
     }
-    period_name = period_map.get(time_period, f'{time_period} period')
+    
+    # Handle backward compatibility for deprecated 'T' format
+    if time_period.endswith('T'):
+        time_period_clean = time_period.replace('T', 'min')
+        print(f"Note: '{time_period}' is deprecated. Using '{time_period_clean}' instead.")
+    else:
+        time_period_clean = time_period
+        
+    period_name = period_map.get(time_period, period_map.get(time_period_clean, f'{time_period_clean} period'))
     
     # Resample to get mean scores for each period
     df_resampled = df.set_index('datetime')
-    period_means = df_resampled[score_col].resample(time_period).mean()
+    period_means = df_resampled[score_col].resample(time_period_clean).mean()
     
     # Plot period means as larger black dots
     ax5.scatter(period_means.index, period_means.values, 
@@ -356,7 +366,7 @@ def main():
     
     # Create and save plots
     create_plots(analysis_data, args.bins, args.output, args.time_period, args.plot3_samples, args.plot5_samples)
-    
+
     # Print summary
     print("\nAnalysis Complete!")
     print(f"Filename pattern: '{args.name_pattern}'")
@@ -372,3 +382,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
