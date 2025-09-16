@@ -50,6 +50,8 @@ If need to generate 5 sec chunk files from the resampled 24kHz files, run 
      
       python3 chunk_resampled.py
 
+example:      
+
       nohup python3 chunk_resampled.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2020/10/ > logs/nohup_chunk_2020_10.out &
 
 Args:
