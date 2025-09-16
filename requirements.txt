@@ -11,3 +11,4 @@ usort
 ufmt
 pylint
 natsort
+pandas
