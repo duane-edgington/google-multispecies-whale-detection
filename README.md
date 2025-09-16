@@ -55,13 +55,14 @@ example:
       nohup python3 chunk_resampled.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz/2020/10/ > logs/nohup_chunk_2020_10.out &
 
 Args:
-        input_directory: Input directory path
 
-        chunk_duration: Duration of each chunk in seconds
+input_directory: Input directory path
+
+chunk_duration: Duration of each chunk in seconds
     
-    Returns:
+Returns:
 
-        Processing statistics
+Processing statistics
 
 
 
@@ -70,6 +71,8 @@ Args:
 run the model over the resampled 5 sec chunks
 
        python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/ --output_dir ./results --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"
+
+example:
 
         nohup python run_model.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2020/10/ --output_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2" > logs/nohup_run_model_2020_10.out &
 
@@ -114,11 +117,15 @@ to convert json output to a csv file (one file per directory)
 
       extract_epoch_key_scores.py 
 
+script to iterate over the csv files
+
        process_all_key_scores.sh
 # example
        nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_sinc/2018/04 Oo > logs/nohup_scores_sinc_2018_04.out &
 # another example
        nohup ./process_all_key_scores.sh /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/10/ Mn > logs/nohup_scores_mn_2020_10.out &
+
+pattern
 
        ./process_all_key_scores.sh /path/to/scores Mn
 
@@ -156,6 +163,7 @@ Example
            --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
 
 another example
+
        python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/11 \
            --name-pattern "epoch_mn_scores" --bins 10 --time-period "60T" \
            --output /mnt/PAM_Analysis/test/analysis_scores_mn_2020_11.png
