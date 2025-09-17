@@ -268,6 +268,9 @@ def create_plots(analysis_data, num_bins, output_file, time_period, plot3_sample
     ax4.set_title(f'{score_col} Distribution by Time Period')
     ax4.set_ylabel(score_col)
     ax4.tick_params(axis='x', rotation=45)
+
+    # Set fixed y-axis limits between 0.0 and 1.0
+    ax4.set_ylim(0.0, 1.0)
     
     # Plot 5: Enhanced time series with individual points and period means
     # Sample up to plot5_samples individual points
