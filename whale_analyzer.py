@@ -233,7 +233,7 @@ def create_plots(analysis_data, num_bins, output_file, time_period, plot3_sample
     
     # Plot 3: Basic time series of scores (sampled)
     time_sample = df.sample(min(plot3_samples, len(df)))  # Sample for plotting efficiency
-    ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.3, s=2, color='grey', label=score_col)
+    ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.5, s=3, color='blue', label=score_col)
     ax3.set_xlabel('Time')
     ax3.set_ylabel(score_col)
     ax3.set_title(f'{score_col} Time Series ({plot3_samples:,} samples)')
@@ -320,13 +320,13 @@ def create_plots(analysis_data, num_bins, output_file, time_period, plot3_sample
         f'Files Processed: {stats["files_processed"]}',
         f'Total Samples: {stats["total_samples"]:,}',
         f'Date Range: {stats["date_range"][0].strftime("%Y-%m-%d")} to {stats["date_range"][1].strftime("%Y-%m-%d")}',
-        f'Mean {score_col}: {stats["score_mean"]:.3f}',
-        f'Std Dev: {stats["score_std"]:.3f}',
-        f'Min {score_col}: {stats["score_min"]:.3f}',
-        f'Max {score_col}: {stats["score_max"]:.3f}',
+        f'Mean {score_col}: {stats["score_mean"]:.4f}',
+        f'Std Dev: {stats["score_std"]:.4f}',
+        f'Min {score_col}: {stats["score_min"]:.4f}',
+        f'Max {score_col}: {stats["score_max"]:.4f}',
         f'Time Period for Means: {period_name}',
-        f'Plot 3 Samples: {plot3_samples:,}',
-        f'Plot 5 Samples: {plot5_samples:,}'
+        f'Plot 3 Time Series Samples: {plot3_samples:,}',
+        f'Plot 5 Time Series Samples: {plot5_samples:,}'
     ]
     ax6.text(0.1, 0.9, '\n'.join(stats_text), transform=ax6.transAxes, 
              fontfamily='monospace', verticalalignment='top', fontsize=9)
@@ -375,10 +375,10 @@ def main():
     print(f"Files successfully processed: {analysis_data['stats']['files_processed']}")
     print(f"Total samples: {analysis_data['stats']['total_samples']:,}")
     score_col = analysis_data['stats']['column_names'][1] if len(analysis_data['stats']['column_names']) >= 2 else 'score'
-    print(f"{score_col} range: {analysis_data['stats']['score_min']:.3f} - {analysis_data['stats']['score_max']:.3f}")
-    print(f"Mean {score_col}: {analysis_data['stats']['score_mean']:.3f}")
-    print(f"Plot 3 samples: {args.plot3_samples:,}")
-    print(f"Plot 5 samples: {args.plot5_samples:,}")
+    print(f"{score_col} range: {analysis_data['stats']['score_min']:.4f} - {analysis_data['stats']['score_max']:.4f}")
+    print(f"Mean {score_col}: {analysis_data['stats']['score_mean']:.4f}")
+    print(f"Plot 3 Time Series samples: {args.plot3_samples:,}")
+    print(f"Plot 5 Time Series samples: {args.plot5_samples:,}")
 
 if __name__ == "__main__":
     main()
