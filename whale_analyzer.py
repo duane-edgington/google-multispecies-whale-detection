@@ -233,7 +233,7 @@ def create_plots(analysis_data, num_bins, output_file, time_period, plot3_sample
     
     # Plot 3: Basic time series of scores (sampled)
     time_sample = df.sample(min(plot3_samples, len(df)))  # Sample for plotting efficiency
-    ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.5, s=3, color='blue', label=score_col)
+    ax3.scatter(time_sample['datetime'], time_sample[score_col], alpha=0.3, s=2, color='cyan', label=score_col)
     ax3.set_xlabel('Time')
     ax3.set_ylabel(score_col)
     ax3.set_title(f'{score_col} Time Series ({plot3_samples:,} samples)')
