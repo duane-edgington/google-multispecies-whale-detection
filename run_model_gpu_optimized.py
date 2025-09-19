@@ -96,14 +96,14 @@ def process_wav_file_batch(model, wav_file_paths, output_dir):
             # Extract probabilities and class names
             top_probabilities = [float(all_probabilities[idx]) for idx in top_classes]
             class_names = [byte_class_names[idx].decode('utf-8') for idx in top_classes]
-            
+            top_logits = [float(all_logits[idx]) for idx in top_classes]
+
             # Create output data
             output_data = {
                 "filename": valid_files[i],
                 "scores": top_probabilities,
                 "class_names": class_names,
-                "all_logits": all_logits.tolist(),
-                "all_probabilities": all_probabilities.tolist()
+                "logits": top_logits
             }
             
             results.append((valid_files[i], output_data))
