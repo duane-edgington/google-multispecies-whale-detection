@@ -84,10 +84,13 @@ optimized nvidia cudnn enabled gpu with batching into gpu memory
 
 	python run_model_gpu_optimized.py    --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/     --output_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_gpu/2018/04/        --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2"     --batch_size 256  # Adjust based on your GPU memory
 
+another
+
+	nohup python3 run_model_gpu_optimized.py --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2020/10/ --output_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores_gpu/2020/10/ --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2" --batch_size 256  > logs/nohup_run_model_gpu_optimized_256_2020_10.out &
 
 test with just one directory, and output to a test directory
 
-    nohup python run_model_gpu.py \
+	nohup python run_model_gpu.py \
             --input_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/resampled_24kHz_chunks/2018/04/MARS_20180413_235913_resampled_24kHz/ \
             --output_dir /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/test/ \
             --model_url "https://www.kaggle.com/models/google/multispecies-whale/TensorFlow2/default/2" > logs/nohup_run_model_2018_04_onedir_gpu_6.out &
