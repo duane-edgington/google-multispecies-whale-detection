@@ -178,19 +178,19 @@ Statistics (number of samples, etc)
 Example
 
     python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/04 \
-           --name-pattern "epoch_oo_scores" --bins 10 --time-period "10T" \
+           --name-pattern "epoch_oo_scores" --bins 10 --time-period "10min" \
            --output /mnt/PAM_Analysis/test/analysis_scores_2018_04.png
 
 another example
 
     python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2020/11 \
-           --name-pattern "epoch_mn_scores" --bins 10 --time-period "60T" \
+           --name-pattern "epoch_mn_scores" --bins 10 --time-period "60min" \
            --output /mnt/PAM_Analysis/test/analysis_scores_mn_2020_11.png
 
 an example with all points plotted on scatter plots
 
     python3 whale_analyzer.py /mnt/PAM_Analysis/GoogleMultiSpeciesWhaleModel2/scores/2018/05 \
-        --name-pattern "epoch_oo_scores" --bins 10 --time-period "60T" \
+        --name-pattern "epoch_oo_scores" --bins 10 --time-period "60min" \
         --output /mnt/PAM_Analysis/test/analysis_scores_oo_2018_05_a.png \
         --plot3-samples 600000 --plot5-samples 600000
 
