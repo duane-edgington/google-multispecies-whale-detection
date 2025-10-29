@@ -372,3 +372,5 @@ The default task in the makefile does type checking, testing and code formatting
 and address any issues, or check with the team about any known pylint complaints.
 
 See [`makefile`](makefile) for all available tasks.
+
+## New stuff here
