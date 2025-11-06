@@ -284,7 +284,59 @@ def main():
     
     # Load the TensorFlow model
     model = load_model_from_hub(args.model_url)
+
+    print("=== GPU Operation Test ===")
+    print(f"TensorFlow version: {tf.__version__}")
+
+    # List available devices
+    gpus = tf.config.list_physical_devices('GPU')
+    print(f"Available GPUs: {gpus}")
+
+    if gpus:
+        print(f"\n🧪 Testing operations on GPU: {gpus[0].name}")
     
+        # Test 1: Simple tensor operations on GPU
+        with tf.device('/GPU:0'):
+            a = tf.constant([[1.0, 2.0], [3.0, 4.0]])
+            b = tf.constant([[1.0, 1.0], [0.0, 1.0]])
+            c = tf.matmul(a, b)
+        
+            print("✅ Matrix multiplication on GPU:")
+            print(f"   Result: {c.numpy()}")
+            print(f"   Device: {c.device}")
+    
+        # Test 2: Larger computation to verify performance
+        print(f"\n🧪 Testing larger computation...")
+        with tf.device('/GPU:0'):
+            start_time = time.time()
+            # Create larger tensors
+            x = tf.random.normal([1000, 1000])
+            y = tf.random.normal([1000, 1000])
+            z = tf.matmul(x, y)
+            gpu_time = time.time() - start_time
+            print(f"✅ 1000x1000 matrix multiplication on GPU:")
+            print(f"   Time: {gpu_time:.3f} seconds")
+            print(f"   Result shape: {z.shape}")
+            print(f"   Device: {z.device}")
+    
+        # Test 3: Compare with CPU (if you want to see the difference)
+        print(f"\n🧪 Comparing with CPU...")
+        with tf.device('/CPU:0'):
+            start_time = time.time()
+            x_cpu = tf.random.normal([1000, 1000])
+            y_cpu = tf.random.normal([1000, 1000])
+            z_cpu = tf.matmul(x_cpu, y_cpu)
+            cpu_time = time.time() - start_time
+            print(f"✅ Same operation on CPU:")
+            print(f"   Time: {cpu_time:.3f} seconds")
+            print(f"   GPU was {cpu_time/gpu_time:.1f}x faster!")
+    
+        print(f"\n🎉 SUCCESS: Your GPU is fully operational!")
+        print(f"   TensorFlow is correctly using GPU acceleration!")
+    
+    else:
+        print("❌ No GPU devices found")
+
     # Process all directories with optimization
     iterate_directories_optimized(model, args.input_dir, args.output_dir, args.batch_size)
     

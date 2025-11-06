@@ -2,7 +2,8 @@
 echo "=== COMPLETE CLEAN INSTALL ==="
 
 # Remove old environment
-cd ~/google-multispecies-whale-detection/new3-12_whale_detection/google-multispecies-whale-detection
+#cd ~/google-multispecies-whale-detection/new3-12_whale_detection/google-multispecies-whale-detection
+deactivate
 rm -rf venv
 
 # Create fresh environment
