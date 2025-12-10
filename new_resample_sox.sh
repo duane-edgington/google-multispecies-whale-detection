@@ -30,7 +30,7 @@ printf "Starting resample_sox.sh: %04d-%02d days: %s\n" "${year}" "${month}" "${
 # convert to 16 bit depth high (required by the google model)
 # highpass 10Hz (to remove dc offset)
 # vol 3 (to adjust volume 3x, making the signal correct in Volts)
-# fade logarithmic 0.1 sec fade in, 600 sec hold (i.e. full duration of 10 minutes), 0.1 sec fade out
+# fade logarithmic 0.1 sec fade in, -0 sec hold (i.e. full duration no matter how long), 0.1 sec fade out
 
 for day in ${days}; do
   prefix=$(printf "%s/MARS_%04d%02d%02d" "${in_dir}" "${year}" "${month}" "${day}")
