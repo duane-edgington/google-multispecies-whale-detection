@@ -32,9 +32,13 @@ Running Google Multispecies-whale kaggle model on PAM Archive data
 
 Go into working directory    
 
+```
    source venv/bin/activate 
+```
 
+```
    export TFHUB_CACHE_DIR="./local/"
+```
 
 If need to generate resampled 24kHz files from PAM archive, run          
 
@@ -101,7 +105,9 @@ test with just one directory, and output to a test directory
 
 check run status with htop
 
-         htop
+```
+htop
+```
 
 if conda has confused the system htop with one of its own copies:
 
